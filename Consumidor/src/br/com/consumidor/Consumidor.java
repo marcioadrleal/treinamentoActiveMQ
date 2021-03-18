@@ -9,6 +9,7 @@ import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
+import javax.jms.MessageListener;
 import javax.jms.Session;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -30,8 +31,16 @@ public class Consumidor {
             Destination destinationFile = (Destination) initial.lookup("financeiro");
             MessageConsumer consumer = session.createConsumer(destinationFile);
 	       
-            Message message = consumer.receive();
-            System.out.println("Recebendo MSG: " + message);
+            consumer.setMessageListener(new MessageListener() {
+				
+				@Override
+				public void onMessage(Message msg) {
+                  System.out.println(msg);   
+					
+				}
+			});
+            
+            
             new Scanner(System.in).nextLine(); //parar o programa para testar a conexao
 	        session.close();
 	        conn.close();
